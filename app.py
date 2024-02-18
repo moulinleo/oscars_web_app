@@ -78,7 +78,7 @@ app.jinja_env.globals.update(calculate_points=calculate_points)
 
 
 
-categories = scrap_nominees(url="https://en.wikipedia.org/wiki/96th_Academy_Awards", keep=2)
+categories = scrap_nominees(url="https://en.wikipedia.org/wiki/96th_Academy_Awards", keep='all')
 
 
 actual_winners = {category: None for category in categories}
