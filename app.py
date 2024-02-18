@@ -5,8 +5,14 @@ import pandas as pd
 from warnings import filterwarnings 
 filterwarnings("ignore")
 
+from flask_sqlalchemy import SQLAlchemy
+
 
 app = Flask(__name__, static_url_path='/static')
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///predictions.db'  # SQLite database file
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(app)
+
 
 # Dictionary to store user votes
 user_votes = {}
@@ -78,6 +84,20 @@ categories = scrap_nominees(url="https://en.wikipedia.org/wiki/96th_Academy_Awar
 actual_winners = {category: None for category in categories}
 
 
+
+# Database model
+class Prediction(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_name = db.Column(db.String(50), nullable=False)
+    vote_data = db.Column(db.PickleType, nullable=False)
+
+    def __repr__(self):
+        return f'<Prediction {self.user_name}>'
+    
+# Initialize database within the application context
+with app.app_context():
+    db.create_all()
+    
 @app.route('/')
 def index():
     return render_template('index.html', categories=categories)
@@ -91,12 +111,20 @@ def vote():
     
     user_vote = {category: request.form[category] for category in categories}
     user_votes[user_name] = user_vote
+    
+    # Save the prediction to the database
+    prediction = Prediction(user_name=user_name, vote_data=user_vote)
+    db.session.add(prediction)
+    db.session.commit()
+    
     return redirect(url_for('results'))
 
 
 @app.route('/results')
 def results():
-    return render_template('results.html', user_votes=user_votes, actual_winners=actual_winners)
+    # Retrieve predictions from the database
+    predictions = Prediction.query.all()
+    return render_template('results.html', predictions=predictions, actual_winners=actual_winners)
 
 
 

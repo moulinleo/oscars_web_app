@@ -22,25 +22,24 @@
         <thead>
             <tr>
                 <th>User</th>
-                {% set first_user_vote = user_votes.values()|first %}
-                {% for category, _ in first_user_vote.items() %}
+                {% for category, _ in predictions[0].vote_data.items() %}
                     <th>{{ category }}</th>
                 {% endfor %}
                 <th>Total Points</th>
             </tr>
         </thead>
         <tbody>
-            {% for user_name, user_vote in user_votes.items() %}
+            {% for prediction in predictions %}
                 <tr>
-                    <td>{{ user_name }}</td>
-                    {% for category, vote in user_vote.items() %}
+                    <td>{{ prediction.user_name }}</td>
+                    {% for category, vote in prediction.vote_data.items() %}
                         {% if actual_winners[category] == vote %}
                             <td class="correct">{{ vote }}</td>
                         {% else %}
                             <td class="incorrect">{{ vote }}</td>
                         {% endif %}
                     {% endfor %}
-                    <td>{{ calculate_points(user_vote) }}</td>
+                    <td>{{ calculate_points(prediction.vote_data) }}</td>
                 </tr>
             {% endfor %}
         </tbody>
