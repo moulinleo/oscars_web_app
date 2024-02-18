@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <title>Oscar Nominee Voting</title>
+</head>
+<body>
+    <h1>Vote for Oscar Nominees</h1>
+    <form method="post" action="{{ url_for('vote') }}">
+        {% for category, nominees in categories.items() %}
+            <fieldset>
+                <legend>{{ category }}</legend>
+                {% for nominee in nominees %}
+                    <label>
+                        <input type="radio" name="{{ category }}" value="{{ nominee }}">
+                        {{ nominee }}
+                    </label><br>
+                {% endfor %}
+            </fieldset>
+        {% endfor %}
+        <button type="submit">Submit Vote</button>
+    </form>
+</body>
+</html>

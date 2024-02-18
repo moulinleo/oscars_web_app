@@ -1,0 +1,48 @@
+{% macro enumerate(seq) %}
+    {% for item in seq %}
+        {% set index = loop.index0 + 1 %}
+        {{ index, item }}
+    {% endfor %}
+{% endmacro %}
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <title>Voting Results</title>
+</head>
+<body>
+    <h1>Voting Results</h1>
+    {% if votes %}
+        <table>
+            <thead>
+                <tr>
+                    <th>User</th>
+                    {% for category, _ in votes[0].items() %}
+                        <th>{{ category }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for user_vote in votes %}
+                    <tr>
+                        <td>User {{ loop.index }}</td>
+                        {% for _, vote in user_vote.items() %}
+                            <td>{{ vote }}</td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No votes yet.</p>
+    {% endif %}
+    <a href="{{ url_for('index') }}">Back to Voting</a>
+</body>
+</html>
+
