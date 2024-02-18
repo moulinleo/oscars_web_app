@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <title>Enter Actual Winners</title>
+</head>
+<body>
+    <h1>Enter Actual Winners</h1>
+    <form method="post" action="{{ url_for('enter_winners') }}">
+        {% for category, nominees in categories.items() %}
+            <label>
+                {{ category }} Winner:
+                <select name="{{ category }}">
+                    <option value="">Select Winner</option>
+                    {% for nominee in nominees %}
+                        <option value="{{ nominee }}">{{ nominee }}</option>
+                    {% endfor %}
+                </select>
+            </label><br>
+        {% endfor %}
+        <button type="submit">Submit Winners</button>
+    </form>
+    <a href="{{ url_for('index') }}">Back to Voting</a>
+</body>
+</html>

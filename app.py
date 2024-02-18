@@ -42,9 +42,33 @@ def scrap_nominees(url="https://en.wikipedia.org/wiki/96th_Academy_Awards"):
     nominees_dict = dict(zip(df_nominees['category'], df_nominees['nominees']))
     return nominees_dict
 
+def calculate_points(user_vote):
+    total_points = 0
+    for category, vote in user_vote.items():
+        if actual_winners[category] == vote:
+            if category == 'Best Picture':
+                total_points += 4
+            elif category == 'Best Director':
+                total_points += 3
+            elif category == 'Best Actor' or category == 'Best Actress':
+                total_points += 2
+            elif category == 'Best Supporting Actor' or category == 'Best Supporting Actress':
+                total_points += 2
+            else:
+                total_points += 1
+    return total_points
+app.jinja_env.globals.update(calculate_points=calculate_points)
+
+
 
 
 categories = scrap_nominees(url="https://en.wikipedia.org/wiki/96th_Academy_Awards")
+
+
+# Keep only the first two keys
+num_keys_to_keep = 2
+categories = {key: categories[key] for key in list(categories.keys())[:num_keys_to_keep]}
+
 
 actual_winners = {category: None for category in categories}
 
@@ -70,6 +94,15 @@ def update_results():
     global actual_winners
     actual_winners = {category: request.form[category] for category in categories}
     return redirect(url_for('results'))
+
+@app.route('/enter_winners', methods=['GET', 'POST'])
+def enter_winners():
+    global actual_winners
+    if request.method == 'POST':
+        actual_winners = {category: request.form[category] for category in categories}
+        return redirect(url_for('results'))
+    return render_template('enter_winners.html', categories=categories)
+
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)

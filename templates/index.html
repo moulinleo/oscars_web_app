@@ -7,16 +7,24 @@
     <title>Oscar Nominee Voting</title>
 </head>
 <body>
-    <h1>Vote for Oscar Nominees</h1>
+    <h1>Vote for 2024 Oscar Nominees !</h1>
     <form method="post" action="{{ url_for('vote') }}">
         {% for category, nominees in categories.items() %}
             <fieldset>
-                <legend>{{ category }}</legend>
+                <legend>{{ category }}
+                    {% if category == 'Best Picture' %}
+                        (5 points)
+                    {% elif category == 'Best Actor' or category == 'Best Actress' %}
+                        (2 points)
+                    {% else %}
+                        (1 point)
+                    {% endif %}
+                </legend>
                 {% for nominee in nominees %}
-                    <label>
-                        <input type="radio" name="{{ category }}" value="{{ nominee }}">
-                        {{ nominee }}
-                    </label><br>
+                <label>
+                    <input type="radio" name="{{ category }}" value="{{ nominee }}">
+                    {{ nominee }}
+                </label><br>
                 {% endfor %}
             </fieldset>
         {% endfor %}
