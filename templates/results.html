@@ -22,16 +22,17 @@
         <thead>
             <tr>
                 <th>User</th>
-                {% for category, _ in votes[0].items() %}
+                {% set first_user_vote = user_votes.values()|first %}
+                {% for category, _ in first_user_vote.items() %}
                     <th>{{ category }}</th>
                 {% endfor %}
                 <th>Total Points</th>
             </tr>
         </thead>
         <tbody>
-            {% for user_vote in votes %}
+            {% for user_name, user_vote in user_votes.items() %}
                 <tr>
-                    <td>User {{ loop.index }}</td>
+                    <td>{{ user_name }}</td>
                     {% for category, vote in user_vote.items() %}
                         {% if actual_winners[category] == vote %}
                             <td class="correct">{{ vote }}</td>
