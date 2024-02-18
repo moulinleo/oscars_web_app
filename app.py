@@ -84,7 +84,6 @@ categories = scrap_nominees(url="https://en.wikipedia.org/wiki/96th_Academy_Awar
 actual_winners = {category: None for category in categories}
 
 
-
 # Database model
 class Prediction(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -138,6 +137,6 @@ def enter_winners():
 
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+    app.run(host='0.0.0.0', debug=True, port=8080)
     
     
